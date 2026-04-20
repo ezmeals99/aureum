@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "displayName": { "type": "string" },
+        "whatsappNumber": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email", "role"]
+    },
+    "Item": {
+      "title": "Item",
+      "description": "Listing for selling items",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sellerId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "categoryId": { "type": "string" },
+        "imageUrls": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["available", "sold"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "sellerId", "name", "price", "categoryId"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Product categories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name"]
+    },
+    "Wishlist": {
+      "title": "Wishlist",
+      "description": "User's saved items",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "itemId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "itemId"]
+    },
+    "Cart": {
+      "title": "Cart",
+      "description": "Items in user's shopping cart",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "itemId": { "type": "string" },
+        "quantity": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "itemId", "quantity"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Profiles of all users"
+    },
+    "/items/{itemId}": {
+      "schema": "Item",
+      "description": "Marketplace listings"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Product category organization"
+    },
+    "/wishlist/{wishId}": {
+      "schema": "Wishlist",
+      "description": "Saved items junction"
+    },
+    "/cart/{cartId}": {
+      "schema": "Cart",
+      "description": "Shopping cart items"
+    }
+  }
+}
