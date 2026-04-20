@@ -6,7 +6,6 @@ import {defineConfig, loadEnv} from 'vite';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    // ඔබගේ GitHub ලින්ක් එක සඳහා 'base' එකතු කර ඇත
     base: '/aureum/', 
     plugins: [react(), tailwindcss()],
     define: {
@@ -14,8 +13,8 @@ export default defineConfig(({mode}) => {
     },
     resolve: {
       alias: {
-        // Component path ප්‍රශ්න මැකීමට alias එක ./src ලෙස සකසා ඇත
-        '@': path.resolve(__dirname, './src'),
+        // ඔබගේ components folder එක project එකේ root එකේ ඇති නිසා මෙසේ වෙනස් කරන ලදී
+        '@': path.resolve(__dirname, '.'),
       },
     },
     server: {
