@@ -21,22 +21,14 @@ import Footer from "./components/layout/Footer";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
-  if (loading) return (
-    <div className="h-screen flex flex-col items-center justify-center bg-black">
-      <div className="w-16 h-16 rounded-[2rem] border border-white/10 animate-spin mb-4" />
-    </div>
-  );
+  if (loading) return <div className="h-screen bg-black"></div>;
   if (!user) return <Navigate to="/login" />;
   return <>{children}</>;
 };
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isAdmin, loading } = useAuth();
-  if (loading) return (
-    <div className="h-screen flex flex-col items-center justify-center bg-black">
-      <div className="w-16 h-16 rounded-[2rem] border border-white/10 animate-spin mb-4" />
-    </div>
-  );
+  if (loading) return <div className="h-screen bg-black"></div>;
   if (!isAdmin) return <Navigate to="/" />;
   return <>{children}</>;
 };
@@ -45,7 +37,6 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       <AuthProvider>
-        {/* HashRouter භාවිතා කිරීමෙන් GitHub Pages වල path ප්‍රශ්න විසඳේ */}
         <Router>
           <Navbar />
           <main className="flex-grow">
