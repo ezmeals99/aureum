@@ -13,11 +13,9 @@ export default defineConfig(({mode}) => {
     },
     resolve: {
       alias: {
+        // ඔබගේ components folder එක root එකේ ඇති නිසා මෙය වැදගත් වේ
         '@': path.resolve(__dirname, '.'),
       },
-    },
-    server: {
-      hmr: process.env.DISABLE_HMR !== 'true',
     },
   };
 });
