@@ -52,7 +52,8 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black-rich text-white flex flex-col font-sans selection:bg-gold selection:text-black">
       <AuthProvider>
-        <Router>
+        {/* GitHub Pages සඳහා basename="/aureum" එක් කරන ලදී */}
+        <Router basename="/aureum">
           <Navbar />
           <main className="flex-grow">
             <Routes>
@@ -79,4 +80,3 @@ export default function App() {
     </div>
   );
 }
-
