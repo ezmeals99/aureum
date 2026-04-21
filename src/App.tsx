@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -52,7 +47,6 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black-rich text-white flex flex-col font-sans selection:bg-gold selection:text-black">
       <AuthProvider>
-        {/* GitHub Pages සඳහා basename="/aureum" එක් කරන ලදී */}
         <Router basename="/aureum">
           <Navbar />
           <main className="flex-grow">
