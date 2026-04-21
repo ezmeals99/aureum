@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUREUM | Luxury Marketplace</title>
+    <title>AUREUM | Elite Luxury Marketplace</title>
     
-    <!-- Scripts: React, Tailwind, Lucide, Firebase -->
+    <!-- Dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -13,200 +13,171 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
         :root {
             --gold: #D4AF37;
-            --black-rich: #050505;
+            --border: rgba(212, 175, 55, 0.25);
+            --glass: rgba(255, 255, 255, 0.03);
+            --bg: #0A0A0A;
         }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--black-rich);
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 0% 0%, #1a1608 0%, transparent 40%), 
+                radial-gradient(circle at 100% 100%, #121212 0%, transparent 40%);
+            background-attachment: fixed;
             color: white;
             margin: 0;
+            overflow-x: hidden;
         }
-        .gold-gradient {
-            background: linear-gradient(135deg, #D4AF37 0%, #F9E29C 50%, #D4AF37 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+
+        .gold-border { border: 1px solid var(--border); }
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); }
+        
         .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            background: var(--glass);
+            border: 1px solid var(--border);
         }
-        .shimmer {
-            animation: shimmer 2s infinite linear;
+
+        .luxury-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .luxury-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.1);
+        }
+
+        .gold-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
         }
         @keyframes shimmer {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
-    <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, orderBy, limit, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
+        const config = {
             projectId: "gen-lang-client-0697100431",
             appId: "1:666026034496:web:01c3e6cae30b8192eee6a5",
             apiKey: "AIzaSyCkznYp78noawaRXATXBNlgP9p9eIGJR0k",
-            authDomain: "gen-lang-client-0697100431.firebaseapp.com",
-            storageBucket: "gen-lang-client-0697100431.firebasestorage.app",
-            messagingSenderId: "666026034496"
+            authDomain: "gen-lang-client-0697100431.firebaseapp.com"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app, "ai-studio-e85ee056-bc45-445f-826b-e56a5e5a1067");
-
-        window.FB = { auth, db, signInWithPopup, GoogleAuthProvider, signOut, collection, getDocs, query, orderBy, limit };
+        const app = initializeApp(config);
+        window.DB = getFirestore(app, "ai-studio-e85ee056-bc45-445f-826b-e56a5e5a1067");
+        window.AUTH = getAuth(app);
+        window.FS = { collection, getDocs, orderBy, limit, query };
     </script>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // --- COMPONENTS ---
-
-        const Navbar = ({ user, onLogin, onLogout }) => (
-            <nav className="fixed top-0 w-full z-50 glass border-b border-white/10 px-6 py-4 flex justify-between items-center">
+        const Navbar = () => (
+            <header className="fixed top-0 w-full z-50 h-[70px] glass border-b border-[#D4AF37]/20 flex items-center justify-between px-8">
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-[#D4AF37] rounded-lg"></div>
-                    <span className="text-xl font-bold tracking-tighter">AUREUM</span>
+                    <span className="text-2xl font-black tracking-[4px] gold-text">AUREUM</span>
                 </div>
-                <div className="flex items-center gap-6">
-                    <button className="text-sm opacity-70 hover:opacity-100">Marketplace</button>
-                    <button className="text-sm opacity-70 hover:opacity-100">Journal</button>
-                    {user ? (
-                        <div className="flex items-center gap-4">
-                            <img src={user.photoURL} className="w-8 h-8 rounded-full border border-gold" />
-                            <button onClick={onLogout} className="text-xs border border-white/20 px-3 py-1 rounded-full uppercase">Logout</button>
-                        </div>
-                    ) : (
-                        <button onClick={onLogin} className="bg-[#D4AF37] text-black px-5 py-2 rounded-full text-sm font-bold hover:scale-105 transition">Login</button>
-                    )}
+                <div className="hidden md:flex flex-1 max-w-md mx-10 relative">
+                    <input type="text" placeholder="Search registry..." className="w-full bg-white/5 border border-white/10 rounded-full px-10 py-2 text-sm focus:border-[#D4AF37]/50 outline-none transition" />
+                    <i data-lucide="search" className="absolute left-3 top-2.5 w-4 h-4 opacity-40"></i>
                 </div>
-            </nav>
+                <div className="flex items-center gap-4">
+                    <button className="hidden sm:block text-[10px] font-black tracking-widest uppercase opacity-60 hover:opacity-100">Gallery</button>
+                    <button className="bg-transparent border border-[#D4AF37] gold-text px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:gold-bg hover:text-black transition active:scale-95">Login Access</button>
+                </div>
+            </header>
         );
 
-        const Hero = () => (
-            <section className="pt-40 pb-20 px-6 text-center">
-                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-6">
-                    Luxury is <span className="gold-gradient italic">Evolved.</span>
+        const Banner = () => (
+            <section className="pt-40 pb-20 px-8 text-center relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#D4AF37]/5 rounded-full blur-[120px] -z-10"></div>
+                <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8">
+                    CURATING <br/> <span className="gold-text italic">PERFECTION.</span>
                 </h1>
-                <p className="max-w-2xl mx-auto text-lg opacity-60 mb-10 leading-relaxed font-light">
-                    The world's most exclusive marketplace for curated heritage items, high-end watches, and luxury artifacts.
-                </p>
-                <div className="flex justify-center gap-4">
-                    <button className="bg-white text-black px-8 py-4 rounded-full font-bold">Explore Listings</button>
-                    <button className="border border-white/20 px-8 py-4 rounded-full font-bold">List an Item</button>
-                </div>
+                <p className="max-w-xl mx-auto text-sm opacity-50 uppercase tracking-[3px] mb-12">The digital vault for verified heritage artifacts</p>
             </section>
         );
 
         const ItemCard = ({ item }) => (
-            <div className="glass rounded-3xl overflow-hidden group hover:border-white/20 transition-all p-2">
-                <div className="h-64 rounded-2xl overflow-hidden relative">
-                    <img src={item.imageUrl || 'https://picsum.photos/seed/luxury/600/400'} className="w-full h-full object-cover transition duration-500 group-hover:scale-110" />
-                    <div className="absolute top-4 right-4 bg-black/50 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">
-                        {item.category || 'Archive'}
+            <div className="luxury-card glass rounded-[2rem] p-3">
+                <div className="h-72 rounded-[1.5rem] overflow-hidden relative">
+                    <img src={item.imageUrl || `https://picsum.photos/seed/${item.id}/600/600`} className="w-full h-full object-cover" alt={item.name} />
+                    <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10">
+                        <span className="text-[10px] font-black gold-text uppercase tracking-widest">${item.price?.toLocaleString()}</span>
                     </div>
                 </div>
-                <div className="p-5">
-                    <h3 className="text-lg font-bold mb-1 truncate">{item.name}</h3>
-                    <p className="text-xl font-light text-[#D4AF37]">${item.price?.toLocaleString() || 'P.O.A'}</p>
-                    <button className="w-full mt-6 py-3 border border-white/10 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition">View Details</button>
+                <div className="p-4">
+                    <div className="text-[9px] font-black gold-text uppercase tracking-[2px] opacity-60 mb-1">{item.category}</div>
+                    <h3 className="text-lg font-bold truncate">{item.name}</h3>
+                    <button className="w-full mt-6 py-3 glass rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-[#D4AF37] transition">Acquire Details</button>
                 </div>
             </div>
         );
 
         const App = () => {
-            const [user, setUser] = useState(null);
             const [items, setItems] = useState([]);
             const [loading, setLoading] = useState(true);
 
             useEffect(() => {
-                const checkAuth = () => {
-                    if (window.FB) {
-                        window.FB.auth.onAuthStateChanged(setUser);
-                        fetchItems();
+                const loadData = async () => {
+                    if (window.FS) {
+                        try {
+                            const q = window.FS.query(window.FS.collection(window.DB, "items"), window.FS.orderBy("createdAt", "desc"), window.FS.limit(6));
+                            const snap = await window.FS.getDocs(q);
+                            setItems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                        } catch (e) { console.error(e); }
+                        setLoading(false);
                     } else {
-                        setTimeout(checkAuth, 500);
+                        setTimeout(loadData, 500);
                     }
                 };
-                checkAuth();
+                loadData();
+                setTimeout(() => lucide.createIcons(), 1000);
             }, []);
 
-            const fetchItems = async () => {
-                try {
-                    const q = window.FB.query(window.FB.collection(window.FB.db, "items"), window.FB.orderBy("createdAt", "desc"), window.FB.limit(8));
-                    const snap = await window.FB.getDocs(q);
-                    setItems(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-                } catch (e) { console.error(e); }
-                setLoading(false);
-            };
-
-            const handleLogin = async () => {
-                const provider = new window.FB.GoogleAuthProvider();
-                await window.FB.signInWithPopup(window.FB.auth, provider);
-            };
-
             return (
-                <div>
-                    <Navbar user={user} onLogin={handleLogin} onLogout={() => window.FB.signOut(window.FB.auth)} />
+                <div className="min-h-screen">
+                    <Navbar />
+                    <Banner />
                     
-                    <main>
-                        <Hero />
-                        
-                        <section className="px-6 py-20 max-w-7xl mx-auto">
-                            <div className="flex justify-between items-end mb-12">
-                                <div>
-                                    <h2 className="text-3xl font-bold tracking-tighter">Recent Curations</h2>
-                                    <p className="opacity-50">Newly authenticated items from verified collectors.</p>
-                                </div>
-                                <button className="text-sm border-b border-[#D4AF37] text-[#D4AF37] pb-1">See All</button>
-                            </div>
+                    <main className="max-w-7xl mx-auto px-8 pb-40">
+                        <div className="flex justify-between items-baseline mb-12 border-b border-white/5 pb-6">
+                            <h2 className="text-2xl font-bold tracking-tight uppercase">Recent Acquisitions</h2>
+                            <button className="text-[10px] font-black gold-text tracking-widest uppercase border-b border-[#D4AF37]">See Registry</button>
+                        </div>
 
-                            {loading ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                                    {[1,2,3,4].map(i => <div key={i} className="h-80 glass rounded-3xl shimmer"></div>)}
-                                </div>
-                            ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                                    {items.map(item => <ItemCard key={item.id} item={item} />)}
-                                </div>
-                            )}
-                        </section>
+                        {loading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {[1,2,3].map(i => <div key={i} className="h-96 glass rounded-[2rem] gold-shimmer opacity-20"></div>)}
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {items.map(item => <ItemCard key={item.id} item={item} />)}
+                            </div>
+                        )}
                     </main>
 
-                    <footer className="glass mt-40 py-20 px-6 border-t border-white/5">
-                         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-                            <div className="col-span-2">
-                                <h1 className="text-4xl font-black mb-6">AUREUM.</h1>
-                                <p className="opacity-50 max-w-sm">The digital gold standard for luxury transactions and verified artifact exchange.</p>
-                            </div>
-                            <div>
-                                <h4 className="font-bold mb-6">Legal</h4>
-                                <ul className="space-y-4 text-sm opacity-50">
-                                    <li>Terms of Sale</li>
-                                    <li>Privacy Protocol</li>
-                                    <li>Authentication</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 className="font-bold mb-6">Connect</h4>
-                                <ul className="space-y-4 text-sm opacity-50">
-                                    <li>Instagram</li>
-                                    <li>Concierge</li>
-                                </ul>
-                            </div>
-                         </div>
+                    <footer className="glass py-20 px-8 border-t border-white/5">
+                        <div className="text-center">
+                            <div className="text-3xl font-black tracking-[8px] gold-text mb-4">AUREUM</div>
+                            <p className="text-[10px] uppercase tracking-[4px] opacity-30">© 2026 Authenticated Heritage Protocol</p>
+                        </div>
                     </footer>
                 </div>
             );
