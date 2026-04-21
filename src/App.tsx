@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { Toaster } from "sonner";
 
@@ -23,8 +23,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return (
     <div className="h-screen flex flex-col items-center justify-center bg-black">
-      <div className="w-16 h-16 rounded-[2rem] glass border border-[var(--border)] animate-spin mb-4" />
-      <span className="text-[var(--gold)] text-[10px] font-black uppercase tracking-[4px] animate-pulse">Initializing Protocol</span>
+      <div className="w-16 h-16 rounded-[2rem] border border-white/10 animate-spin mb-4" />
     </div>
   );
   if (!user) return <Navigate to="/login" />;
@@ -35,8 +34,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isAdmin, loading } = useAuth();
   if (loading) return (
     <div className="h-screen flex flex-col items-center justify-center bg-black">
-      <div className="w-16 h-16 rounded-[2rem] glass border border-[var(--border)] animate-spin mb-4" />
-      <span className="text-[var(--gold)] text-[10px] font-black uppercase tracking-[4px] animate-pulse">Initializing Protocol</span>
+      <div className="w-16 h-16 rounded-[2rem] border border-white/10 animate-spin mb-4" />
     </div>
   );
   if (!isAdmin) return <Navigate to="/" />;
@@ -45,9 +43,10 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-black-rich text-white flex flex-col font-sans selection:bg-gold selection:text-black">
+    <div className="min-h-screen bg-black text-white flex flex-col">
       <AuthProvider>
-        <Router basename="/aureum">
+        {/* HashRouter භාවිතා කිරීමෙන් GitHub Pages වල path ප්‍රශ්න විසඳේ */}
+        <Router>
           <Navbar />
           <main className="flex-grow">
             <Routes>
@@ -55,20 +54,17 @@ export default function App() {
               <Route path="/item/:id" element={<ItemDetails />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin-login" element={<AdminLogin />} />
-              
               <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
               <Route path="/wishlist" element={<PrivateRoute><Wishlist /></PrivateRoute>} />
               <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
               <Route path="/sell" element={<PrivateRoute><SellItem /></PrivateRoute>} />
               <Route path="/my-posts" element={<PrivateRoute><MyPosts /></PrivateRoute>} />
-              
               <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
-              
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>
           <Footer />
-          <Toaster position="top-center" expand={false} richColors theme="dark" />
+          <Toaster position="top-center" theme="dark" />
         </Router>
       </AuthProvider>
     </div>
