@@ -6,14 +6,13 @@ import {defineConfig, loadEnv} from 'vite';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: '/aureum/', 
+    base: '/aureum/',
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
     resolve: {
       alias: {
-        // ඔබගේ components folder එක project එකේ root එකේ ඇති නිසා මෙසේ වෙනස් කරන ලදී
         '@': path.resolve(__dirname, '.'),
       },
     },
